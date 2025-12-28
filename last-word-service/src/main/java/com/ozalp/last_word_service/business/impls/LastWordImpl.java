@@ -39,7 +39,12 @@ public class LastWordImpl implements LastWordService {
         // yeni kelimeyi ekle
         LastWord newWord = mapper.toEntity(request);
         newWord.setBanned(false);
-        return mapper.toResponse(repository.save(newWord));
+        LastWord saved = repository.save(newWord);
+        return LastWordResponse.builder()
+                .id(saved.getId())
+                .text(saved.getText())
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 
     @Override
