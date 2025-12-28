@@ -16,4 +16,6 @@ public interface AuthService {
     boolean existsAdmin();
 
     Auth save(Auth auth);
+
+    boolean validate(String accessToken);
 }

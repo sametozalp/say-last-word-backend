@@ -14,6 +14,8 @@ import com.ozalp.auth_service.repositories.AuthRepository;
 import com.ozalp.auth_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtServiceImpl;
     private final RefreshTokenService refreshTokenService;
+    private CacheManager cacheManager;
 
     @Transactional
     @Override
@@ -94,6 +97,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Auth save(Auth auth) {
         return repository.save(auth);
+    }
+
+    @Override
+    public boolean validate(String accessToken) {
+        Cache cache = cacheManager.getCache("accessTokens");
+        if (cache == null) {
+            return false;
+        }
+
+        Cache.ValueWrapper valueWrapper = cache.get(jwtServiceImpl.extractAuthId(accessToken));
+        return valueWrapper != null;
     }
 
     private Auth findByEmail(String email) {

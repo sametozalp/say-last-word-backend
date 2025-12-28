@@ -78,7 +78,7 @@ public class JwtServiceImpl implements JwtService {
                 .getPayload();
     }
 
-    public String extractEmail(String token) {
+    public String extractAuthId(String token) {
         return getClaims(token).getSubject();
     }
 
@@ -96,6 +96,6 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public Boolean validateToken(String token, String email) {
-        return email.equals(extractEmail(token)) && !isTokenExpired(token);
+        return email.equals(extractAuthId(token)) && !isTokenExpired(token);
     }
 }
