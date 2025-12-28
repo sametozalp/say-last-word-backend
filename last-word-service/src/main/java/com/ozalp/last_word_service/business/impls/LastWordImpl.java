@@ -10,11 +10,13 @@ import com.ozalp.last_word_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,11 +25,21 @@ public class LastWordImpl implements LastWordService {
     private final LastWordRepository repository;
     private final LastWordMapper mapper;
 
+    @Transactional
     @Override
     public LastWordResponse save(LastWordRequest request) {
-        LastWord lastWord = mapper.toEntity(request);
-        lastWord.setBanned(false);
-        return mapper.toResponse(repository.save(lastWord));
+        // öncekinin süresi doldu
+        Optional<LastWord> oldWord = repository.findFirstByDeletedAtIsNullAndIsBannedIsFalseOrderByCreatedAtDesc();
+        if (oldWord.isPresent()) {
+            LastWord old = oldWord.get();
+            old.setExpiredTime(LocalDateTime.now());
+            repository.save(old);
+        }
+
+        // yeni kelimeyi ekle
+        LastWord newWord = mapper.toEntity(request);
+        newWord.setBanned(false);
+        return mapper.toResponse(repository.save(newWord));
     }
 
     @Override

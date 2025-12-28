@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,4 +25,7 @@ public class LastWord extends BaseEntity {
 
     @Column(name = "is_banned", nullable = false)
     private boolean isBanned;
+
+    @Column(name = "expired_time")
+    private LocalDateTime expiredTime;
 }
