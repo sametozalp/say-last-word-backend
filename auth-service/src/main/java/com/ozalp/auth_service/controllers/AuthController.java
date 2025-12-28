@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.ozalp.auth_service.util.Constants.*;
 
 @RestController
-@RequestMapping(V1 + AUTH)
+@RequestMapping(AUTH + V1)
 @AllArgsConstructor
 public class AuthController {
 

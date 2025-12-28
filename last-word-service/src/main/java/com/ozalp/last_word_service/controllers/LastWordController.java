@@ -15,7 +15,7 @@ import java.util.Locale;
 import static com.ozalp.last_word_service.util.Constants.*;
 
 @RestController
-@RequestMapping(LAST_WORD)
+@RequestMapping(LAST_WORD + V1)
 @AllArgsConstructor
 public class LastWordController {
 

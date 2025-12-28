@@ -15,7 +15,7 @@ import java.util.UUID;
 import static com.ozalp.user_profile_service.util.Constants.*;
 
 @RestController
-@RequestMapping(USER_PROFILE)
+@RequestMapping(USER_PROFILE + V1)
 @AllArgsConstructor
 public class UserProfileController {
 
