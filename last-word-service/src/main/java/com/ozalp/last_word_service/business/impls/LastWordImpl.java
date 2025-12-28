@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -40,6 +41,19 @@ public class LastWordImpl implements LastWordService {
                 .createdAt(lastWord.getCreatedAt())
                 .timeElapsed(formatElapsedTime(lastWord.getCreatedAt(), locale))
                 .build();
+    }
+
+    @Override
+    public List<LastWordResponse> getLastWordList(Locale locale) {
+        List<LastWord> lastWordList = repository.findByDeletedAtIsNullAndIsBannedIsFalseOrderByCreatedAtDesc();
+        return lastWordList.stream()
+                .map(l -> {
+                    LastWordResponse response = mapper.toResponse(l);
+                    response.setCreatedAt(l.getCreatedAt());
+                    response.setTimeElapsed(formatElapsedTime(l.getCreatedAt(), locale));
+                    return response;
+                })
+                .toList();
     }
 
     private String formatElapsedTime(LocalDateTime createdAt, Locale locale) {

@@ -30,4 +30,9 @@ public class LastWordController {
     ResponseEntity<?> getLastWord(Locale locale) {
         return ResponseEntity.ok(lastWordService.getLastWord(locale));
     }
+
+    @PostMapping(GET_LAST_WORD_LIST)
+    ResponseEntity<?> getLastWordList(Locale locale) {
+        return ResponseEntity.ok(lastWordService.getLastWordList(locale));
+    }
 }
