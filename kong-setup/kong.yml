@@ -7,15 +7,16 @@ services:
     routes:
       - name: auth
         paths:
-          - /api/auth
+          - /api/auth/v1
+        strip_path: false
 
   - name: last-word-service
     url: http://host.docker.internal:8082
     routes:
       - name: last-word
         paths:
-          - /api/last-word
-        strip_path: true
+          - /api/last-word/v1
+        strip_path: false
         plugins:
           - name: pre-function
             config:
@@ -23,20 +24,41 @@ services:
                 - |
                   local http = require "resty.http"
                   local client = http.new()
-                  -- Auth servisine istek atıyoruz
-                  local res, err = client:request_uri("http://host.docker.internal:8081/validate", {
-                    method = "GET",
+                  
+                  -- 1. Token'ı al ve temizle
+                  local auth_header = ngx.var.http_authorization
+                  local token = ""
+                  if auth_header then
+                      -- "Bearer " kısmını kaldır, sadece token kalsın
+                      token = auth_header:gsub("Bearer ", "")
+                  end
+
+                  -- 2. Java Constants'a göre tam adresi oluştur:
+                  -- AUTH(/api/auth) + V1(/v1) + VALIDATE(/validate) + /{token}
+                  local target_url = "http://host.docker.internal:8081/api/auth/v1/validate/" .. token
+
+                  -- 3. İsteği POST olarak at
+                  local res, err = client:request_uri(target_url, {
+                    method = "POST",
                     headers = {
-                      ["Authorization"] = ngx.var.http_authorization, -- Gelen token'ı aynen ilet
+                      ["Content-Type"] = "application/json",
                     }
                   })
 
-                  -- Eğer auth servisi 200 dönmezse kapıyı kapat
-                  if not res or res.status ~= 200 then
-                    ngx.status = res and res.status or 401
+                  -- 4. Hata Ayıklama (Log): Java'ya ulaşamazsa veya hata alırsa Docker loglarında görelim
+                  if not res then
+                    ngx.log(ngx.ERR, "AUTH SERVISINE BAGLANILAMADI: ", err)
+                    ngx.status = 500
+                    ngx.say('{"error": "Auth service down"}')
+                    return ngx.exit(500)
+                  end
+
+                  -- 5. Eğer Java 200 (OK) dönmezse Kong kapıyı kapatır
+                  if res.status ~= 200 then
+                    ngx.status = res.status
                     ngx.header.content_type = "application/json"
-                    ngx.say('{"error": "Yetkisiz Erişim", "message": "Auth servisinden onay alınamadı"}')
-                    ngx.exit(ngx.status)
+                    ngx.say(res.body) -- Java'dan gelen hata mesajını aynen döner
+                    return ngx.exit(res.status)
                   end
 
   - name: user-profile-service
@@ -44,4 +66,5 @@ services:
     routes:
       - name: user-profile
         paths:
-          - /api/user-profile
+          - /api/user-profile/v1
+        strip_path: false

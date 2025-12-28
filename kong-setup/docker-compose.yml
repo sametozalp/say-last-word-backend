@@ -8,6 +8,8 @@ services:
       KONG_PROXY_LISTEN: 0.0.0.0:8000
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       KONG_PLUGINS: bundled # pre-function zaten bunun içindedir
+      KONG_UNTRUSTED_LUA: "on"
+      KONG_UNTRUSTED_LUA_SANDBOX_REQUIRES: "resty.http"
     volumes:
       - ./kong.yml:/usr/local/kong/declarative/config.yml
     ports:
