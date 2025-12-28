@@ -10,4 +10,5 @@ public interface AuthService {
 
     AuthResponse login(AuthLoginWithEmailRequest request);
 
+    AuthResponse refreshToken(String refreshToken);
 }

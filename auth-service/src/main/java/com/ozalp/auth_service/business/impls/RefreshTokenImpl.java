@@ -30,16 +30,15 @@ public class RefreshTokenImpl implements RefreshTokenService {
 
     @Override
     public void deleteUserRefreshTokens(UUID authId) {
-        List<RefreshToken> refreshTokens = repository.findByAuthIdAndDeletedAtIsNull(authId);
+        List<RefreshToken> refreshTokens = repository.findByAuthId(authId);
         for (RefreshToken refreshToken : refreshTokens) {
-            refreshToken.markAsDeleted();
-            repository.save(refreshToken);
+            repository.delete(refreshToken);
         }
     }
 
     @Override
     public RefreshToken findByRefreshToken(String refreshToken) {
-        return repository.findByRefreshToken(refreshToken)
+        return repository.findByRefreshTokenAndDeletedAtIsNull(refreshToken)
                 .orElseThrow(() -> new EntityNotFoundException(Messages.RefreshToken.NOT_FOUND));
     }
 }

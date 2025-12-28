@@ -6,14 +6,14 @@ import com.ozalp.auth_service.business.dtos.responses.AuthResponse;
 import com.ozalp.auth_service.business.enums.RoleEnum;
 import com.ozalp.auth_service.business.mappers.AuthMapper;
 import com.ozalp.auth_service.business.services.AuthService;
+import com.ozalp.auth_service.business.services.RefreshTokenService;
 import com.ozalp.auth_service.entities.Auth;
+import com.ozalp.auth_service.entities.RefreshToken;
 import com.ozalp.auth_service.exceptions.errors.InvalidAuthCredentials;
-import com.ozalp.auth_service.exceptions.errors.InvalidTokenException;
 import com.ozalp.auth_service.repositories.AuthRepository;
 import com.ozalp.auth_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.aspectj.bridge.Message;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtServiceImpl;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     @Override
@@ -56,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
         reqAuth.setEmail(reqAuth.getEmail().trim());
 
         Auth dbAuth = findByEmail(reqAuth.getEmail());
-        if(!passwordEncoder.matches(reqAuth.getPassword(), dbAuth.getPassword())) {
+        if (!passwordEncoder.matches(reqAuth.getPassword(), dbAuth.getPassword())) {
             throw new InvalidAuthCredentials(Messages.AuthMessages.INVALID_AUTH_CREDENTIALS);
         }
 
@@ -66,6 +67,22 @@ public class AuthServiceImpl implements AuthService {
                 .username(dbAuth.getUsername())
                 .accessToken(jwtServiceImpl.generateAccessToken(dbAuth))
                 .refreshToken(jwtServiceImpl.generateRefreshToken(dbAuth).getRefreshToken())
+                .build();
+    }
+
+    @Override
+    public AuthResponse refreshToken(String refreshToken) {
+        RefreshToken dbRefreshToken = refreshTokenService.findByRefreshToken(refreshToken);
+        dbRefreshToken.markAsDeleted();
+        refreshTokenService.save(dbRefreshToken);
+
+        Auth auth = dbRefreshToken.getAuth();
+        return AuthResponse.builder()
+                .id(auth.getId())
+                .email(auth.getEmail())
+                .username(auth.getUsername())
+                .accessToken(jwtServiceImpl.generateAccessToken(auth))
+                .refreshToken(jwtServiceImpl.generateRefreshToken(auth).getRefreshToken())
                 .build();
     }
 
