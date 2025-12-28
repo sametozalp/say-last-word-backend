@@ -45,6 +45,7 @@ public class LastWordImpl implements LastWordService {
         return LastWordResponse.builder()
                 .id(saved.getId())
                 .text(saved.getText())
+                .userProfileId(saved.getUserProfileId())
                 .createdAt(saved.getCreatedAt())
                 .build();
     }

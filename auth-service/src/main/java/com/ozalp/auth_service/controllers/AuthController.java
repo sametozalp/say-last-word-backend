@@ -32,7 +32,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
 
-    @PostMapping(VALIDATE+"/{accessToken}")
+    @PostMapping(VALIDATE + "/{accessToken}")
     ResponseEntity<?> validate(@PathVariable String accessToken) {
         return ResponseEntity.ok(authService.validate(accessToken));
     }
