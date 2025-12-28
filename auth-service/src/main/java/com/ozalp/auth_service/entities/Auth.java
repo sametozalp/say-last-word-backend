@@ -3,6 +3,7 @@ package com.ozalp.auth_service.entities;
 import com.ozalp.auth_service.business.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "auths")
@@ -11,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Auth extends BaseEntity {
+public class Auth extends BaseEntity implements GrantedAuthority {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -28,4 +29,8 @@ public class Auth extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
+    @Override
+    public String getAuthority() {
+        return role.name();
+    }
 }

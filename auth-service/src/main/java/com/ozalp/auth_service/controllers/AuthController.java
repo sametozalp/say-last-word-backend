@@ -1,5 +1,6 @@
 package com.ozalp.auth_service.controllers;
 
+import com.ozalp.auth_service.business.dtos.requests.AuthLoginWithEmailRequest;
 import com.ozalp.auth_service.business.dtos.requests.AuthRegisterRequest;
 import com.ozalp.auth_service.business.services.AuthService;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,10 @@ public class AuthController {
     @PostMapping(REGISTER)
     ResponseEntity<?> register(@RequestBody AuthRegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping(LOGIN)
+    ResponseEntity<?> login(@RequestBody AuthLoginWithEmailRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }
