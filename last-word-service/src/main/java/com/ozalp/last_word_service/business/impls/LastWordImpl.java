@@ -9,6 +9,8 @@ import com.ozalp.last_word_service.repositories.LastWordRepository;
 import com.ozalp.last_word_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +72,20 @@ public class LastWordImpl implements LastWordService {
                     response.setTimeElapsed(formatElapsedTime(l.getCreatedAt(), locale));
                     return response;
                 })
+                .toList();
+    }
+
+    @Override
+    public List<LastWordResponse> getLeaderBoard(Locale locale) {
+        Page<LastWord> result = repository.findTop5ByMaxTimeDiff(PageRequest.of(0, 5));
+        return result.map(l -> {
+                            LastWordResponse response = mapper.toResponse(l);
+                            response.setCreatedAt(l.getCreatedAt());
+                            response.setTimeElapsed(formatElapsedTime(l.getCreatedAt(), locale));
+                            return response;
+                        }
+                )
+                .stream()
                 .toList();
     }
 

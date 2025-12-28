@@ -15,4 +15,5 @@ public interface LastWordService {
 
     List<LastWordResponse> getLastWordList(Locale locale);
 
+    List<LastWordResponse> getLeaderBoard(Locale locale);
 }
