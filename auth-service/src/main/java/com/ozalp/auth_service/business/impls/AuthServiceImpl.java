@@ -86,6 +86,16 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Override
+    public boolean existsAdmin() {
+        return repository.existsByUsername("admin");
+    }
+
+    @Override
+    public Auth save(Auth auth) {
+        return repository.save(auth);
+    }
+
     private Auth findByEmail(String email) {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(Messages.AuthMessages.NOT_FOUND));
