@@ -11,4 +11,8 @@ public final class Messages {
         public static final String NOT_FOUND = "Refresh token not found";
         public static final String INVALID_TOKEN = "Invalid token";
     }
+
+    public static final class AccessToken {
+        public static final String INVALID_TOKEN = "Invalid token";
+    }
 }

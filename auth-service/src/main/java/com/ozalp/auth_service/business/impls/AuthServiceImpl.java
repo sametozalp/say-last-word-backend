@@ -10,6 +10,7 @@ import com.ozalp.auth_service.business.services.RefreshTokenService;
 import com.ozalp.auth_service.entities.Auth;
 import com.ozalp.auth_service.entities.RefreshToken;
 import com.ozalp.auth_service.exceptions.errors.InvalidAuthCredentials;
+import com.ozalp.auth_service.exceptions.errors.InvalidTokenException;
 import com.ozalp.auth_service.repositories.AuthRepository;
 import com.ozalp.auth_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
@@ -107,7 +108,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Cache.ValueWrapper valueWrapper = cache.get(jwtServiceImpl.extractAuthId(accessToken));
-        return valueWrapper != null;
+        if (valueWrapper == null) {
+            throw new InvalidTokenException(Messages.AccessToken.INVALID_TOKEN);
+        }
+        return true;
     }
 
     private Auth findByEmail(String email) {
