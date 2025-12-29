@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.ozalp.last_word_service.util.Constants.*;
 
@@ -36,5 +37,11 @@ public class LastWordController {
     @GetMapping(GET_LEADER_BOARD)
     ResponseEntity<?> getLeaderBoard(Locale locale) {
         return ResponseEntity.ok(lastWordService.getLeaderBoard(locale));
+    }
+
+    @GetMapping(BANNED + "/{wordId}")
+    ResponseEntity<?> markAsBanned(@PathVariable(required = true) UUID wordId) {
+        lastWordService.markAsBanned(wordId);
+        return ResponseEntity.ok("");
     }
 }

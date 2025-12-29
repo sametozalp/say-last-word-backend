@@ -9,5 +9,6 @@ public final class Constants {
     public static final String GET_LAST_WORD = "/get-last-word";
     public static final String GET_LAST_WORD_LIST = "/get-last-word-list";
     public static final String GET_LEADER_BOARD = "/get-leader-board";
+    public static final String BANNED = "/mark-as-banned";
 
 }

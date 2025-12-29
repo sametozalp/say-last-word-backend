@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -88,6 +89,13 @@ public class LastWordImpl implements LastWordService {
                 )
                 .stream()
                 .toList();
+    }
+
+    @Override
+    public void markAsBanned(UUID wordId) {
+        LastWord word = repository.findById(wordId)
+                .orElseThrow(() -> new RuntimeException("Kelime bulunamadı."));
+        word.setBanned(true);
     }
 
     private String formatElapsedTime(LocalDateTime createdAt, Locale locale) {

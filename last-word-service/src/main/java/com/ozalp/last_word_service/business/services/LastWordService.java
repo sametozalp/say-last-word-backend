@@ -6,6 +6,7 @@ import com.ozalp.last_word_service.entities.LastWord;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public interface LastWordService {
 
@@ -16,4 +17,6 @@ public interface LastWordService {
     List<LastWordResponse> getLastWordList(Locale locale);
 
     List<LastWordResponse> getLeaderBoard(Locale locale);
+
+    void markAsBanned(UUID wordId);
 }

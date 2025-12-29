@@ -30,8 +30,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/api/auth/**").permitAll()
+                        .pathMatchers("/api/user-profile/*/save").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/last-word/**").permitAll()
-                        //.pathMatchers("/servis2/user/**").hasAnyRole("USER", "ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/api/last-word/*/markAsBanned").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
