@@ -39,7 +39,7 @@ public class LastWordController {
         return ResponseEntity.ok(lastWordService.getLeaderBoard(locale));
     }
 
-    @GetMapping(BANNED + "/{wordId}")
+    @PostMapping(BANNED + "/{wordId}")
     ResponseEntity<?> markAsBanned(@PathVariable(required = true) UUID wordId) {
         lastWordService.markAsBanned(wordId);
         return ResponseEntity.ok("");
