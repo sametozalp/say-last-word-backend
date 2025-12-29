@@ -35,7 +35,7 @@ public class JwtServiceImpl implements JwtService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    @Cacheable(value = "accessTokens", key = "#auth.getId()")
+    //@Cacheable(value = "accessTokens", key = "#auth.getId()")
     public String generateAccessToken(Auth auth) {
         return Jwts.builder()
                 .subject(auth.getId().toString())

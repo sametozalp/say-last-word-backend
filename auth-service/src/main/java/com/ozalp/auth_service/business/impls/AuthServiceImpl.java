@@ -11,12 +11,14 @@ import com.ozalp.auth_service.entities.Auth;
 import com.ozalp.auth_service.entities.RefreshToken;
 import com.ozalp.auth_service.exceptions.errors.InvalidAuthCredentials;
 import com.ozalp.auth_service.exceptions.errors.InvalidTokenException;
+import com.ozalp.auth_service.manager.UserProfileManager;
 import com.ozalp.auth_service.repositories.AuthRepository;
 import com.ozalp.auth_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtServiceImpl;
     private final RefreshTokenService refreshTokenService;
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
+    private final UserProfileManager userProfileManager;
 
     @Transactional
     @Override
@@ -44,13 +47,13 @@ public class AuthServiceImpl implements AuthService {
         reqAuth.setUsername("user" + UUID.randomUUID().toString().toLowerCase());
         reqAuth.setRole(RoleEnum.USER);
         Auth saved = repository.save(reqAuth);
-
+        ResponseEntity<?> r = userProfileManager.save(saved.getId());
         return AuthResponse.builder()
                 .id(saved.getId())
                 .email(saved.getEmail())
                 .username(saved.getUsername())
-                .accessToken(jwtServiceImpl.generateAccessToken(reqAuth))
-                .refreshToken(jwtServiceImpl.generateRefreshToken(reqAuth).getRefreshToken())
+                .accessToken(jwtServiceImpl.generateAccessToken(saved))
+                .refreshToken(jwtServiceImpl.generateRefreshToken(saved).getRefreshToken())
                 .build();
     }
 

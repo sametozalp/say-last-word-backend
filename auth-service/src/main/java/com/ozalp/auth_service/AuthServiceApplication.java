@@ -8,11 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableCaching
 @AllArgsConstructor
+@EnableFeignClients
 public class AuthServiceApplication implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
@@ -25,7 +27,7 @@ public class AuthServiceApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (!authService.existsAdmin()) {
-            Auth auth = new Auth("sametozalp0056@gmail.com", "admin", passwordEncoder.encode("123456"), true, RoleEnum.ADMIN);
+            Auth auth = new Auth("sametozalp0056@gmail.com", "admin", passwordEncoder.encode("adminsamet"), true, RoleEnum.ADMIN);
             authService.save(auth);
         }
     }
