@@ -18,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Value("jwtSecretKey")
+    @Value("${jwtSecretKey}")
     private String secretKey;
 
     @Bean
@@ -30,9 +30,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/api/auth/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/last-word/v1/mark-as-banned/*").hasRole("ADMIN")
                         .pathMatchers("/api/user-profile/*/save").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/last-word/**").permitAll()
-                        .pathMatchers(HttpMethod.POST, "/api/last-word/*/markAsBanned").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

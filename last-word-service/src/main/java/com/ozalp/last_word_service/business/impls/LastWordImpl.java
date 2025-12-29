@@ -96,6 +96,7 @@ public class LastWordImpl implements LastWordService {
         LastWord word = repository.findById(wordId)
                 .orElseThrow(() -> new RuntimeException("Kelime bulunamadı."));
         word.setBanned(true);
+        repository.save(word);
     }
 
     private String formatElapsedTime(LocalDateTime createdAt, Locale locale) {
