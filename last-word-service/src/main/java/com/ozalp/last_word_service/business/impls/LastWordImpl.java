@@ -1,10 +1,12 @@
 package com.ozalp.last_word_service.business.impls;
 
+import com.ozalp.last_word_service.business.dtos.requests.LastWordAnonymousRequest;
 import com.ozalp.last_word_service.business.dtos.requests.LastWordRequest;
 import com.ozalp.last_word_service.business.dtos.responses.LastWordResponse;
 import com.ozalp.last_word_service.business.mappers.LastWordMapper;
 import com.ozalp.last_word_service.business.services.LastWordService;
 import com.ozalp.last_word_service.entities.LastWord;
+import com.ozalp.last_word_service.exceptions.errors.AlreadySaidYourLastWord;
 import com.ozalp.last_word_service.repositories.LastWordRepository;
 import com.ozalp.last_word_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +33,33 @@ public class LastWordImpl implements LastWordService {
     @Transactional
     @Override
     public LastWordResponse save(LastWordRequest request) {
+        // öncekinin süresi doldu
+        Optional<LastWord> oldWord = repository.findFirstByDeletedAtIsNullAndIsBannedIsFalseOrderByCreatedAtDesc();
+        if (oldWord.isPresent()) {
+            LastWord old = oldWord.get();
+
+            if (old.getUserProfileId() != null && old.getUserProfileId().equals(request.getUserProfileId())) {
+                throw new AlreadySaidYourLastWord(Messages.LastWord.ALREADY_SAID);
+            }
+
+            old.setExpiredTime(LocalDateTime.now());
+            repository.save(old);
+        }
+
+        // yeni kelimeyi ekle
+        LastWord newWord = mapper.toEntity(request);
+        newWord.setBanned(false);
+        LastWord saved = repository.save(newWord);
+        return LastWordResponse.builder()
+                .id(saved.getId())
+                .text(saved.getText())
+                .userProfileId(saved.getUserProfileId())
+                .createdAt(saved.getCreatedAt())
+                .build();
+    }
+
+    @Override
+    public LastWordResponse save(LastWordAnonymousRequest request) {
         // öncekinin süresi doldu
         Optional<LastWord> oldWord = repository.findFirstByDeletedAtIsNullAndIsBannedIsFalseOrderByCreatedAtDesc();
         if (oldWord.isPresent()) {

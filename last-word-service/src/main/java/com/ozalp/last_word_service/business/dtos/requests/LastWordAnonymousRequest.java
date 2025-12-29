@@ -6,13 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
-public class LastWordRequest {
-
-    private UUID userProfileId;
+public class LastWordAnonymousRequest {
 
     @NotBlank(message = "Text cannot be blank")
     @NotNull(message = "Text cannot be null")

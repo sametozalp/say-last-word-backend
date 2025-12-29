@@ -1,5 +1,6 @@
 package com.ozalp.last_word_service.controllers;
 
+import com.ozalp.last_word_service.business.dtos.requests.LastWordAnonymousRequest;
 import com.ozalp.last_word_service.business.dtos.requests.LastWordRequest;
 import com.ozalp.last_word_service.business.services.LastWordService;
 import jakarta.validation.Valid;
@@ -21,6 +22,11 @@ public class LastWordController {
 
     @PostMapping(SAVE)
     ResponseEntity<?> save(@Valid @RequestBody LastWordRequest request) {
+        return ResponseEntity.ok(lastWordService.save(request));
+    }
+
+    @PostMapping(SAVE_ANON)
+    ResponseEntity<?> save(@Valid @RequestBody LastWordAnonymousRequest request) {
         return ResponseEntity.ok(lastWordService.save(request));
     }
 

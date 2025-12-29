@@ -1,5 +1,6 @@
 package com.ozalp.last_word_service.exceptions;
 
+import com.ozalp.last_word_service.exceptions.errors.AlreadySaidYourLastWord;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(AlreadySaidYourLastWord.class)
+    ResponseEntity<?> handle(AlreadySaidYourLastWord e) {
+        return ResponseEntity.badRequest().body(Map.of("message", e.getLocalizedMessage()));
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     ResponseEntity<?> handle(EntityNotFoundException e) {

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Setter
 public class LastWord extends BaseEntity {
 
-    @Column(name = "user_profile_id", nullable = false)
+    @Column(name = "user_profile_id")
     private UUID userProfileId;
 
     @Column(name = "text", nullable = false, length = 255)
