@@ -5,10 +5,7 @@ import com.ozalp.last_word_service.business.services.LastWordService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
 
@@ -26,17 +23,17 @@ public class LastWordController {
         return ResponseEntity.ok(lastWordService.save(request));
     }
 
-    @PostMapping(GET_LAST_WORD)
+    @GetMapping(GET_LAST_WORD)
     ResponseEntity<?> getLastWord(Locale locale) {
         return ResponseEntity.ok(lastWordService.getLastWord(locale));
     }
 
-    @PostMapping(GET_LAST_WORD_LIST)
+    @GetMapping(GET_LAST_WORD_LIST)
     ResponseEntity<?> getLastWordList(Locale locale) {
         return ResponseEntity.ok(lastWordService.getLastWordList(locale));
     }
 
-    @PostMapping(GET_LEADER_BOARD)
+    @GetMapping(GET_LEADER_BOARD)
     ResponseEntity<?> getLeaderBoard(Locale locale) {
         return ResponseEntity.ok(lastWordService.getLeaderBoard(locale));
     }
