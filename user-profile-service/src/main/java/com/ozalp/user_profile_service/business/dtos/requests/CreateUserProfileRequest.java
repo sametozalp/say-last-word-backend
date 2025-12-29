@@ -7,11 +7,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class UpdateUserProfileRequest {
-
-    private UUID id;
-
+public class CreateUserProfileRequest {
+    private UUID authId;
     private String fullName;
-
     private CountryRequest country;
+
 }

@@ -1,5 +1,6 @@
 package com.ozalp.user_profile_service.business.impls;
 
+import com.ozalp.user_profile_service.business.dtos.requests.CreateUserProfileRequest;
 import com.ozalp.user_profile_service.business.dtos.requests.UpdateUserProfileRequest;
 import com.ozalp.user_profile_service.business.dtos.responses.UserProfileResponse;
 import com.ozalp.user_profile_service.business.mappers.CountryMapper;
@@ -48,20 +49,25 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public UserProfileResponse updateProfile(UpdateUserProfileRequest request) {
         UserProfile userProfile = findById(request.getId());
-        userProfile.setName(request.getName());
+        userProfile.setFullName(request.getFullName());
         Country country = countryService.getCountry(request.getCountry());
         userProfile.setCountry(country);
         return userProfileMapper.toResponse(repository.save(userProfile));
     }
 
     @Override
-    public UserProfileResponse save(UUID authId) {
-        UserProfile userProfile = new UserProfile(authId, "user", null);
+    public UserProfileResponse save(CreateUserProfileRequest request) {
+        UserProfile userProfile = new UserProfile(
+                request.getAuthId(),
+                request.getFullName(),
+                countryService.save(request.getCountry())
+        );
         UserProfile saved = repository.save(userProfile);
         return UserProfileResponse.builder()
                 .id(saved.getId())
                 .authId(saved.getAuthId())
-                .name("user")
+                .name(request.getFullName())
                 .build();
     }
+
 }

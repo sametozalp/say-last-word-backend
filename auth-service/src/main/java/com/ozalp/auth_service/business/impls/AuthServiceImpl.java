@@ -2,6 +2,7 @@ package com.ozalp.auth_service.business.impls;
 
 import com.ozalp.auth_service.business.dtos.requests.AuthLoginWithEmailRequest;
 import com.ozalp.auth_service.business.dtos.requests.AuthRegisterRequest;
+import com.ozalp.auth_service.business.dtos.requests.CreateUserProfileRequest;
 import com.ozalp.auth_service.business.dtos.responses.AuthResponse;
 import com.ozalp.auth_service.business.enums.RoleEnum;
 import com.ozalp.auth_service.business.mappers.AuthMapper;
@@ -47,7 +48,13 @@ public class AuthServiceImpl implements AuthService {
         reqAuth.setUsername("user" + UUID.randomUUID().toString().toLowerCase());
         reqAuth.setRole(RoleEnum.USER);
         Auth saved = repository.save(reqAuth);
-        ResponseEntity<?> r = userProfileManager.save(saved.getId());
+        ResponseEntity<?> r = userProfileManager.save(
+                CreateUserProfileRequest.builder()
+                        .authId(saved.getId())
+                        .fullName(request.getFullName())
+                        .country(request.getCountry())
+                        .build()
+        );
         return AuthResponse.builder()
                 .id(saved.getId())
                 .email(saved.getEmail())

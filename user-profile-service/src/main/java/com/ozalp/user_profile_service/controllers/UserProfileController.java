@@ -1,5 +1,6 @@
 package com.ozalp.user_profile_service.controllers;
 
+import com.ozalp.user_profile_service.business.dtos.requests.CreateUserProfileRequest;
 import com.ozalp.user_profile_service.business.dtos.requests.UpdateUserProfileRequest;
 import com.ozalp.user_profile_service.business.services.UserProfileService;
 import jakarta.validation.Valid;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 import static com.ozalp.user_profile_service.util.Constants.*;
 
@@ -22,8 +21,8 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @PostMapping(SAVE)
-    ResponseEntity<?> save(UUID authId) {
-        return ResponseEntity.ok(userProfileService.save(authId));
+    ResponseEntity<?> save(@Valid @RequestBody CreateUserProfileRequest request) {
+        return ResponseEntity.ok(userProfileService.save(request));
     }
 
     @PostMapping(UPDATE)
