@@ -19,6 +19,7 @@ public interface LastWordRepository extends JpaRepository<LastWord, UUID> {
     @Query("""
                 SELECT e
                 FROM LastWord e
+                WHERE e.isBanned = false
                 ORDER BY (e.expiredTime - e.createdAt) DESC
             """)
     Page<LastWord> findTop5ByMaxTimeDiff(Pageable pageable);
