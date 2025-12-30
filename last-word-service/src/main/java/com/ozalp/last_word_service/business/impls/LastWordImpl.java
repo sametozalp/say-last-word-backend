@@ -3,16 +3,19 @@ package com.ozalp.last_word_service.business.impls;
 import com.ozalp.last_word_service.business.dtos.requests.LastWordAnonymousRequest;
 import com.ozalp.last_word_service.business.dtos.requests.LastWordRequest;
 import com.ozalp.last_word_service.business.dtos.responses.LastWordResponse;
+import com.ozalp.last_word_service.business.dtos.responses.UserProfile;
 import com.ozalp.last_word_service.business.mappers.LastWordMapper;
 import com.ozalp.last_word_service.business.services.LastWordService;
 import com.ozalp.last_word_service.entities.LastWord;
 import com.ozalp.last_word_service.exceptions.errors.AlreadySaidYourLastWord;
+import com.ozalp.last_word_service.manager.UserProfileManager;
 import com.ozalp.last_word_service.repositories.LastWordRepository;
 import com.ozalp.last_word_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class LastWordImpl implements LastWordService {
 
     private final LastWordRepository repository;
     private final LastWordMapper mapper;
+    private final UserProfileManager userProfileManager;
 
     @Transactional
     @Override
@@ -84,13 +88,21 @@ public class LastWordImpl implements LastWordService {
     public LastWordResponse getLastWord(Locale locale) {
         LastWord lastWord = repository.findFirstByDeletedAtIsNullAndIsBannedIsFalseOrderByCreatedAtDesc()
                 .orElseThrow(() -> new EntityNotFoundException(Messages.LastWord.NOT_FOUND));
-        return LastWordResponse.builder()
+        LastWordResponse response = LastWordResponse.builder()
                 .id(lastWord.getId())
                 .text(lastWord.getText())
                 .userProfileId(lastWord.getUserProfileId())
                 .createdAt(lastWord.getCreatedAt())
                 .timeElapsed(formatElapsedTime(lastWord.getCreatedAt(), locale))
                 .build();
+
+        if (lastWord.getUserProfileId() != null) {
+            ResponseEntity<UserProfile> profile = userProfileManager.getProfile(lastWord.getUserProfileId());
+            response.setCountry(profile.getBody().getCountry());
+            response.setPersonFullName(profile.getBody().getFullName());
+        }
+
+        return response;
     }
 
     @Override
@@ -112,6 +124,8 @@ public class LastWordImpl implements LastWordService {
         return result.map(l -> {
                             LastWordResponse response = mapper.toResponse(l);
                             response.setCreatedAt(l.getCreatedAt());
+//                            response.setCountry();
+//                            response.setPersonFullName();
                             response.setTimeElapsed(formatElapsedTime(l.getCreatedAt(), locale));
                             return response;
                         }

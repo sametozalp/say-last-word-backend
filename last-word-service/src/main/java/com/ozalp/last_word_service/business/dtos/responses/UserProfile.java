@@ -4,26 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
-public class LastWordResponse {
+public class UserProfile {
 
     private UUID id;
 
-    private UUID userProfileId;
+    private UUID authId;
 
-    private String personFullName;
+    private String fullName;
 
     private Country country;
-
-    private String text;
-
-    private LocalDateTime createdAt;
-
-    private String timeElapsed;
-
 }

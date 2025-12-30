@@ -66,8 +66,14 @@ public class UserProfileImpl implements UserProfileService {
         return UserProfileResponse.builder()
                 .id(saved.getId())
                 .authId(saved.getAuthId())
-                .name(request.getFullName())
+                .fullName(request.getFullName())
                 .build();
+    }
+
+    @Override
+    public UserProfileResponse getProfile(UUID profileId) {
+        UserProfile userProfile = findById(profileId);
+        return userProfileMapper.toResponse(userProfile);
     }
 
 }

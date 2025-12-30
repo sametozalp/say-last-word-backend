@@ -16,7 +16,7 @@ public class UserProfileResponse {
 
     private UUID authId;
 
-    private String name;
+    private String fullName;
 
     private CountryResponse country;
 }

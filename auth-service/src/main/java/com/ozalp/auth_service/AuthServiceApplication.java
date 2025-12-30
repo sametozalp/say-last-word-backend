@@ -50,16 +50,4 @@ public class AuthServiceApplication implements CommandLineRunner {
         }
     }
 
-    // cors problem solved
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("*"); // Tüm metodlara izin ver (GET, POST vs.)
-            }
-        };
-    }
 }

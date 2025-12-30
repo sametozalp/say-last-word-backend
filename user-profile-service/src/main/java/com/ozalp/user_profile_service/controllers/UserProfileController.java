@@ -6,10 +6,9 @@ import com.ozalp.user_profile_service.business.services.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 import static com.ozalp.user_profile_service.util.Constants.*;
 
@@ -28,5 +27,10 @@ public class UserProfileController {
     @PostMapping(UPDATE)
     ResponseEntity<?> update(@Valid @RequestBody UpdateUserProfileRequest request) {
         return ResponseEntity.ok(userProfileService.updateProfile(request));
+    }
+
+    @PostMapping(GET_PROFILE + "/{profileId}")
+    ResponseEntity<?> getProfile(@PathVariable(required = true) UUID profileId) {
+        return ResponseEntity.ok(userProfileService.getProfile(profileId));
     }
 }

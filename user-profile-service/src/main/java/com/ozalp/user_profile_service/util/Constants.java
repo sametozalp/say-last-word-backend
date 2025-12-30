@@ -7,5 +7,6 @@ public final class Constants {
 
     public static final String SAVE = "/save";
     public static final String UPDATE = "/update";
+    public static final String GET_PROFILE = "/get-profile";
 
 }
