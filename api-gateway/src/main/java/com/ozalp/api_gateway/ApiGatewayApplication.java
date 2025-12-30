@@ -23,9 +23,10 @@ public class ApiGatewayApplication {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("*"); // Tüm metodlara izin ver (GET, POST vs.)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // OPTIONS'ı açıkça ekleyin
+                        .allowedHeaders("*") // Tüm headerlara izin verin
+                        .allowCredentials(true);
             }
         };
     }
-
 }

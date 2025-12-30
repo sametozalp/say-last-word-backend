@@ -124,9 +124,13 @@ public class LastWordImpl implements LastWordService {
         return result.map(l -> {
                             LastWordResponse response = mapper.toResponse(l);
                             response.setCreatedAt(l.getCreatedAt());
-//                            response.setCountry();
-//                            response.setPersonFullName();
                             response.setTimeElapsed(formatElapsedTime(l.getCreatedAt(), locale));
+
+                            if (l.getUserProfileId() != null) {
+                                ResponseEntity<UserProfile> profile = userProfileManager.getProfile(l.getUserProfileId());
+                                response.setCountry(profile.getBody().getCountry());
+                                response.setPersonFullName(profile.getBody().getFullName());
+                            }
                             return response;
                         }
                 )

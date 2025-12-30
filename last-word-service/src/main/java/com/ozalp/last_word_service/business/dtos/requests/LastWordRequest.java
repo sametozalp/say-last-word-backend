@@ -16,6 +16,6 @@ public class LastWordRequest {
 
     @NotBlank(message = "Text cannot be blank")
     @NotNull(message = "Text cannot be null")
-    @Size(min = 25, max = 255, message = "Metin 25 ile 255 karakter arasında olmalıdır")
+    @Size(min = 10, max = 255, message = "Metin 10 ile 255 karakter arasında olmalıdır")
     private String text;
 }
