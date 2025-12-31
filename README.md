@@ -1,4 +1,4 @@
-# Say Last Word
+# Say Last Word (Microservice)
 
 **Say Last Word** is a web application built with a **microservices architecture** that allows users to share their last words and view other users' words. The application enables users to share their last words anonymously or as registered users, view the most recently shared word, and track the leaderboard.
 
