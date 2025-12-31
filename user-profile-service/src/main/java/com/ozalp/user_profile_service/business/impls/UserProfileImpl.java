@@ -14,6 +14,7 @@ import com.ozalp.user_profile_service.util.Messages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -55,12 +56,14 @@ public class UserProfileImpl implements UserProfileService {
         return userProfileMapper.toResponse(repository.save(userProfile));
     }
 
+    @Transactional
     @Override
     public UserProfileResponse save(CreateUserProfileRequest request) {
+        Country c = countryService.getCountry(request.getCountry());
         UserProfile userProfile = new UserProfile(
                 request.getAuthId(),
                 request.getFullName(),
-                countryService.save(request.getCountry())
+                c
         );
         UserProfile saved = repository.save(userProfile);
         return UserProfileResponse.builder()
